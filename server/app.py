@@ -55,7 +55,6 @@ def get_restaurant_by_id(id):
     else:
         return jsonify({"error": "Restaurant not found"}), 404
 
-
 @app.route('/restaurants/<int:id>', methods=['DELETE'])
 def delete_restaurant(id):
     restaurant = Restaurant.query.get(id)
