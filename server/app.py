@@ -72,11 +72,14 @@ def get_pizzas():
     pizzas = Pizza.query.all()
     return jsonify([pizza.to_dict() for pizza in pizzas])
 
+@app.route('/restaurant_pizzas', methods=['GET', 'POST'])
+def restaurant_pizzas():
+    if request.method == 'GET':
+        restaurant_pizzas = RestaurantPizza.query.all()
+        return jsonify([rp.to_dict() for rp in restaurant_pizzas]), 200
 
-@app.route('/restaurant_pizzas', methods=['POST'])
-def create_restaurant_pizza():
+    # Handle POST request
     data = request.get_json()
-
     try:
         # Validate and retrieve associated Pizza and Restaurant
         pizza = Pizza.query.get(data.get('pizza_id'))
@@ -87,8 +90,8 @@ def create_restaurant_pizza():
 
         # Validate the price
         price = data.get('price')
-        if price is None or not (1 <= price <= 30):
-            return jsonify({"errors": ["validation errors"]}), 400
+        if not (1 <= price <= 30):
+            return jsonify({"errors": ["Price must be between 1 and 30"]}), 400
 
         # Create the RestaurantPizza object
         new_restaurant_pizza = RestaurantPizza(

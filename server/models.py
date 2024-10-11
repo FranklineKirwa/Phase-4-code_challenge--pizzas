@@ -37,7 +37,7 @@ class Pizza(db.Model, SerializerMixin):
     # Relationship to RestaurantPizza
     restaurant_pizzas = db.relationship('RestaurantPizza', back_populates='pizza')
 
-    serialize_only = ('id', 'name', 'ingredients')  # Exclude restaurant_pizzas from being serialized by default
+    serialize_only = ('id', 'name', 'ingredients') 
 
     def __repr__(self):
         return f'<Pizza {self.name}, {self.ingredients}>'
@@ -56,8 +56,8 @@ class RestaurantPizza(db.Model, SerializerMixin):
     # Relationships back to Restaurant and Pizza
     restaurant = db.relationship('Restaurant', back_populates='restaurant_pizzas')
     pizza = db.relationship('Pizza', back_populates='restaurant_pizzas')
-    
-    serialize_rules = ('-restaurant.restaurant_pizzas', '-pizza.restaurant_pizzas')  # Avoid recursion
+
+    serialize_rules = ('-restaurant.restaurant_pizzas', '-pizza.restaurant_pizzas')
 
     @validates('price')
     def validate_price(self, key, price):
