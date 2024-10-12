@@ -21,7 +21,9 @@ class Restaurant(db.Model, SerializerMixin):
     # Relationship to RestaurantPizza
     restaurant_pizzas = db.relationship('RestaurantPizza', back_populates='restaurant', cascade='all, delete-orphan')
 
-    serialize_only = ('id', 'name', 'address') 
+
+
+    serialize_only = ('id', 'name', 'address')
 
     def __repr__(self):
         return f'<Restaurant {self.name}>'

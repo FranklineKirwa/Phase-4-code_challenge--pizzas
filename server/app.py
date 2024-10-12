@@ -71,40 +71,30 @@ def get_pizzas():
     pizzas = Pizza.query.all()
     return jsonify([pizza.to_dict() for pizza in pizzas])
 
-@app.route('/restaurant_pizzas', methods=['GET', 'POST'])
+@app.route('/restaurant_pizzas', methods=['POST'])
 def restaurant_pizzas():
-    if request.method == 'GET':
-        restaurant_pizzas = RestaurantPizza.query.all()
-        return jsonify([rp.to_dict() for rp in restaurant_pizzas]), 200
-
     data = request.get_json()
-    try:
-        # Validate and retrieve associated Pizza and Restaurant
-        pizza = Pizza.query.get(data.get('pizza_id'))
-        restaurant = Restaurant.query.get(data.get('restaurant_id'))
 
-        if not pizza or not restaurant:
-            return jsonify({"errors": ["Pizza or Restaurant not found"]}), 404
+    pizza = Pizza.query.get(data.get('pizza_id'))
+    restaurant = Restaurant.query.get(data.get('restaurant_id'))
 
-        #validate price
-        price = data.get('price')
-        if not (1 <= price <= 30):
-            return jsonify({"errors": ["Price must be between 1 and 30"]}), 400
+    if not pizza or not restaurant:
+        return jsonify({"errors": ["Pizza or Restaurant not found"]}), 404
 
-        new_restaurant_pizza = RestaurantPizza(
-            price=price,
-            pizza_id=pizza.id,
-            restaurant_id=restaurant.id
-        )
+    price = data.get('price')
+    if not price or not (1 <= price <= 30):
+        return jsonify({"errors": ["validation errors"]}), 400
 
-        db.session.add(new_restaurant_pizza)
-        db.session.commit()
+    new_restaurant_pizza = RestaurantPizza(
+        price=price,
+        pizza_id=pizza.id,
+        restaurant_id=restaurant.id
+    )
 
-        return jsonify(new_restaurant_pizza.to_dict()), 201
+    db.session.add(new_restaurant_pizza)
+    db.session.commit()
 
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"errors": [str(e)]}), 500
+    return jsonify(new_restaurant_pizza.to_dict()), 201
 
 
 if __name__ == '__main__':
