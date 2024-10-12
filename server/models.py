@@ -21,7 +21,8 @@ class Restaurant(db.Model, SerializerMixin):
     # Relationship to RestaurantPizza
     restaurant_pizzas = db.relationship('RestaurantPizza', back_populates='restaurant', cascade='all, delete-orphan')
 
-
+     # Association proxy for pizza names through restaurant_pizzas
+    pizzas = association_proxy('restaurant_pizzas', 'pizza')
 
     serialize_only = ('id', 'name', 'address')
 
@@ -38,6 +39,9 @@ class Pizza(db.Model, SerializerMixin):
 
     # Relationship to RestaurantPizza
     restaurant_pizzas = db.relationship('RestaurantPizza', back_populates='pizza')
+
+    # Association proxy for restaurant names through restaurant_pizzas
+    restaurants = association_proxy('restaurant_pizzas', 'restaurant')
 
     serialize_only = ('id', 'name', 'ingredients')
 
@@ -58,6 +62,10 @@ class RestaurantPizza(db.Model, SerializerMixin):
     # Relationships back to Restaurant and Pizza
     restaurant = db.relationship('Restaurant', back_populates='restaurant_pizzas')
     pizza = db.relationship('Pizza', back_populates='restaurant_pizzas')
+
+     # Association proxy will map the price directly
+    pizza_name = association_proxy('pizza', 'name')
+    restaurant_name = association_proxy('restaurant', 'name')
 
     serialize_rules = ('-restaurant.restaurant_pizzas', '-pizza.restaurant_pizzas')
 
