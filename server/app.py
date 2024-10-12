@@ -3,7 +3,7 @@
 from models import db, Restaurant, RestaurantPizza, Pizza
 from flask_migrate import Migrate
 from flask import Flask, request, jsonify
-#from flask_restful import Api, Resource
+from flask_restful import Api, Resource
 import os
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
