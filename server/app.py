@@ -77,7 +77,6 @@ def restaurant_pizzas():
         restaurant_pizzas = RestaurantPizza.query.all()
         return jsonify([rp.to_dict() for rp in restaurant_pizzas]), 200
 
-    # Handle POST request
     data = request.get_json()
     try:
         # Validate and retrieve associated Pizza and Restaurant
@@ -87,12 +86,11 @@ def restaurant_pizzas():
         if not pizza or not restaurant:
             return jsonify({"errors": ["Pizza or Restaurant not found"]}), 404
 
-        # Validate the price
+        #validate price
         price = data.get('price')
         if not (1 <= price <= 30):
             return jsonify({"errors": ["Price must be between 1 and 30"]}), 400
 
-        # Create the RestaurantPizza object
         new_restaurant_pizza = RestaurantPizza(
             price=price,
             pizza_id=pizza.id,
